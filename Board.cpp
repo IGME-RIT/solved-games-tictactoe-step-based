@@ -1,3 +1,29 @@
+/*
+File Name : Board.cpp
+Copyright � 2018
+Original authors : Sanketh Bhat
+Written under the supervision of David I.Schwartz, Ph.D., and
+supported by a professional development seed grant from the B.Thomas
+Golisano College of Computing & Information Sciences
+(https ://www.rit.edu/gccis) at the Rochester Institute of Technology.
+
+This program is free software : you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.If not, see <http://www.gnu.org/licenses/>.
+
+Description:
+Basic Tic Tac Toe AI using a step based method
+*/
+
 #include "Board.h"
 #include "Solver.h"
 
@@ -13,13 +39,13 @@ int Board::CheckWin()
 		check = units[i][0];
 
 		win = true;
-		for (int j = 1; j < 3; j++)
+		for (int j = 0; j < 3; j++)
 		{
 			if (units[i][j] != check)
 				win = false;
 		}
 
-		if (win == true && units[0][i] != 0)
+		if (win == true && units[i][0] != 0)
 			return check;
 	}
 
@@ -80,14 +106,12 @@ void Board::UnitSelected(glm::vec3 pos)
 
 }
 
-
 //updates game board based on the game state and unit selected
 void Board::UpdateBoard(int x, int y)
 {
 	int check = 0;
 	turncount++;
 
-	//Updates board data and switches states
 	if (state == player1)
 	{
 		units[x][y] = 1;
@@ -102,8 +126,6 @@ void Board::UpdateBoard(int x, int y)
 
 		state = player1;
 	}
-
-	//Checking for game end
 	check = CheckWin();
 
 	if (turncount == 9 || check != 0)
@@ -114,7 +136,6 @@ void Board::UpdateBoard(int x, int y)
 		else
 			std::cout << "Player " << check << " Wins!";
 	}
-	//If the next turn is by the AI play it 
 	else
 	{
 		if (state == AIturn)
@@ -153,7 +174,7 @@ Board::Board(Model* eM, Model* xM, Model* oM, int aturn)
 		y -= 2 / 3.0f;
 	}
 
-	//Make the AI play the first turn if it's player number 1
+	//Make the AI play the first turn ifi it's player number 1
 	if (AIturn == 1)
 	{
 		PlayTurn(units, 1);

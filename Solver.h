@@ -1,4 +1,31 @@
-#pragma once
+/*
+File Name : Solver.h
+Copyright � 2018
+Original authors : Sanketh Bhat
+Written under the supervision of David I.Schwartz, Ph.D., and
+supported by a professional development seed grant from the B.Thomas
+Golisano College of Computing & Information Sciences
+(https ://www.rit.edu/gccis) at the Rochester Institute of Technology.
+
+This program is free software : you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or (at
+your option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.If not, see <http://www.gnu.org/licenses/>.
+
+Description:
+Basic Tic Tac Toe AI using a step based method
+*/
+
+#ifndef _SOLVER_H
+#define _SOLVER_H
 #include <vector>
 
 //simple struct to hole a location in the grid
@@ -24,7 +51,7 @@ int solvedX=0;
 int solvedY=0;	
 int turncount;
 //Checks if a row/column/diagonal has 2 of the same units on it.
-//Parameters are the board data, the AI player number and a boolean if the method is used to check for a fork or not.
+//Parameters
  int CheckDouble(int u[3][3], int pNum, bool checkFork=false)
 {
 	int doubleCount=0;
@@ -135,8 +162,7 @@ int turncount;
 }
 
 //Checks if a row/column/diagonal has 2 of the same units on it.
-//Parameters are the board data, the AI player number and a boolean if the method is to be called inside of it or not
-bool CheckFork(int u[3][3], int pNum, bool parent=true)
+bool  CheckFork(int u[3][3], int pNum)
 {
 	int uCopy[3][3];
 	int doubleCheck = 0;
@@ -147,7 +173,7 @@ bool CheckFork(int u[3][3], int pNum, bool parent=true)
 			uCopy[i][j] = u[i][j];
 		}
 	}
-	bool check=false;
+
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -155,25 +181,12 @@ bool CheckFork(int u[3][3], int pNum, bool parent=true)
 			if (uCopy[i][j] == 0)
 			{
 				uCopy[i][j] = pNum;
-
-				//Semi-recursive functionality here to "predict" future forks
-				//Only called once per unit and only if each player has already played at least one turn
-				if (parent && turncount>2)
+				doubleCheck = CheckDouble(uCopy, pNum, true);
+				if( doubleCheck >= 2)
 				{
-					
-					check = CheckFork(uCopy, pNum, false);
-					if (check)
-						return true;
-				}
-				else
-				{			
-					doubleCheck = CheckDouble(uCopy, pNum, true);
-					if (doubleCheck >= 2)
-					{
-						indX = i;
-						indY = j;
-						return true;
-					}
+					indX = i;
+					indY = j;
+					return true;
 				}
 
 				uCopy[i][j] = 0;
@@ -190,7 +203,7 @@ bool Win(int u[3][3])
 	return(CheckDouble(u, playerNumber, false)==1);
 }
 
-//Checks if a block to an opponents possible win exists
+//Checks if a block to an opponents possible win is possible
 bool Block(int u[3][3])
 {
 	if (playerNumber == 1 )
@@ -201,20 +214,21 @@ bool Block(int u[3][3])
 	return false;
 }
 
-//Checks if a fork is available
 bool Fork(int u[3][3])
 {
-	return CheckFork(u, playerNumber);
+	//Only amke this check after each player has played twice
 
-	
+	if((playerNumber==1 && turncount>3) || (playerNumber == 2 && turncount>4))
+		return CheckFork(u, playerNumber);
+
+	return false;
 }
 
-//Tries to block an opponents fork
 bool BlockFork(int u[3][3])
 {
-	if (playerNumber == 1)
+	if (playerNumber == 1 && turncount > 4)
 		return CheckFork(u, 2);
-	else if (playerNumber == 2)
+	else if (playerNumber == 2 && turncount > 3)
 		return CheckFork(u, 1);
 }
 
@@ -230,16 +244,16 @@ bool Center(int u[3][3])
 	return false;
 }
 
-//Plays in the opposite corner of the other player if possible
 bool OppCorner(int u[3][3])
 {
+	
 	for (int i = 0; i < 4; i++)
 	{
 		indX = corners[i].x;
 		indY= corners[i].y;
 		if (u[indX][indY] != 0 && u[indX][indY] != playerNumber)
 		{
-			//0/0 - 2/2  2/0 - 0/2 :Index locations
+			//0/0 - 2/2  2/0 - 0/2
 			if (i == 0)
 			{
 				if (u[2][2] == 0)
@@ -334,7 +348,7 @@ bool EmptySide(int u[3][3])
 			if (!Fork(u))
 				if (!BlockFork(u))
 					if (!Center(u))
-						if (!OppCorner(u))					
+						if (!OppCorner(u))
 							if (!EmptyCorner(u))
 									EmptySide(u);
 
@@ -344,3 +358,5 @@ bool EmptySide(int u[3][3])
 	
 
 }
+
+#endif _SOLVER_H

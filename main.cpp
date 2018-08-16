@@ -1,6 +1,6 @@
 /*
 File Name: main.cpp
-Copyright © 2018
+Copyright ï¿½ 2018
 Original authors: Sanketh Bhat
 Written under the supervision of David I. Schwartz, Ph.D., and
 supported by a professional development seed grant from the B. Thomas
@@ -21,9 +21,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Description:
-
-
-References:
+Basic Tic Tac Toe AI using a step based method
 
 */
 
@@ -222,7 +220,7 @@ void main()
 
 		for each (GameObject* body in bodies)
 		{
-			body->render(uniMVP);  
+			body->render(uniMVP);
 		}
 		// Swaps the back buffer to the front buffer
 		// Remember, you're rendering to the back buffer, then once rendering is complete, you're moving the back buffer to the front so it can be displayed.
